@@ -23,7 +23,8 @@ An intermittent idle UI/repaint issue was observed and remains unresolved. No vi
 
 The repository keeps the successful runtime workarounds and adds non-hardware `--version` and `--check-wmi` diagnostics. The latter loads the initializer in a child AppDomain and runs real WMI queries, catching the assembly-name failure that a parent-only check would miss.
 
-Python tests cover refusing unsafe prefix initialization/mapping replacement, a checksum mismatch, FTDI/device guards and running-application protection. Build checks do not substitute for hardware tests. GitHub CI uses Windows' WMI and has no programmer/decoder attached.
+Python tests cover refusing unsafe prefix initialization/mapping replacement, a checksum mismatch, FTDI/device guards and running-application protection. Build checks do not substitute for hardware tests. GitHub CI's Windows job checks compilation and child-domain/hook loading
+without querying WMI or opening a serial port.
 
 The fresh-prefix replay and build checks performed while assembling the repository are recorded below after completion. Do not infer that an unlisted platform/version or operation has been tested.
 
@@ -51,7 +52,17 @@ fresh installation: one operating-system row and zero matching COM1 PnP
 rows under Wine. This check does not transmit decoder commands. A new
 hardware read or write was not repeated in the disposable prefix.
 
-Nine Python guard tests passed locally. Windows build/WMI CI is configured
+Nine Python guard tests passed locally. Windows build/loader CI is configured
 separately; its status must be checked on GitHub, not inferred from the
 local Wine checks. Generated build artifacts and machine-specific settings
 are ignored by Git and are not committed.
+
+## Native Windows CI boundary
+
+The first Windows CI build succeeded, but running the Wine-specific WMI
+workaround on native Windows returned Access denied during enumeration.
+Native Windows runtime support is not claimed. Windows CI now checks
+compilation, the version entry point, child-AppDomain initialization and
+Harmony hook installation using --check-loader. The real --check-wmi
+check remains available and has passed locally under Wine, including the
+fresh-prefix replay. CI does not claim hardware or decoder validation.

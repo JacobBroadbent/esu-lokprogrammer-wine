@@ -16,6 +16,10 @@ public class LokProgrammerWineCompat {
   SerialTimeoutCompat.Install();
   Log("Installed local WMI and finite serial-read timeout compatibility helpers.");
  }
+ public static void CheckLoader(){
+  Console.WriteLine("Compatibility child AppDomain and hooks initialized.");
+  AppDomain.CurrentDomain.SetData("CheckExitCode",0);
+ }
  public static void CheckWmi(){
   try{
    foreach(var q in new[]{"SELECT * FROM Win32_OperatingSystem","SELECT Service FROM Win32_PnpEntity WHERE Caption LIKE '%(COM1%'"})
@@ -26,12 +30,12 @@ public class LokProgrammerWineCompat {
  }
  [STAThread]public static int Main(string[] args){
   if(args.Length>0 && args[0]=="--version"){Console.WriteLine("LokProgrammerWineCompat repository build 0.1.0");return 0;}
-  if(args.Length>0 && args[0]=="--check-wmi"){
+  if(args.Length>0 && (args[0]=="--check-wmi" || args[0]=="--check-loader")){
    var here=Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
    var settings=new AppDomainSetup{ApplicationBase=here,AppDomainInitializer=Install};
    if(File.Exists(Path.Combine(here,"LokProgrammer.exe.config")))settings.ConfigurationFile=Path.Combine(here,"LokProgrammer.exe.config");
    var check=AppDomain.CreateDomain("Compatibility loader and WMI check",null,settings);
-   check.DoCallBack(CheckWmi);
+   if(args[0]=="--check-loader")check.DoCallBack(CheckLoader);else check.DoCallBack(CheckWmi);
    return (int)check.GetData("CheckExitCode");
   }
   if(args.Length>0 && args[0]=="--self-test"){

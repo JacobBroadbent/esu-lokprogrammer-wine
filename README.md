@@ -129,7 +129,7 @@ First launch the application and test programmer detection. Power the programmer
 
 Keep this initial validation to detection and reading. Sound uploads and firmware updates have not been validated here. ESU may update decoder firmware as part of writing sound/data; see its [product description](https://www.esu.eu/en/products/lokprogrammer). If an update is already underway, do not disconnect its power or USB connection.
 
-With the application closed, `LokProgrammerWineCompat.exe --self-test` checks real WMI queries, opens COM1 at 921600 baud with RTS handshake, checks a zero-length read and performs a 200 ms read **without transmitting commands**. Incoming unexpected data makes that check different from the intended no-data timeout test. `--check-wmi` exercises loading the helper in a child AppDomain and running WMI without opening a serial port. `--version` prints the repository helper version.
+With the application closed, `LokProgrammerWineCompat.exe --self-test` checks real WMI queries, opens COM1 at 921600 baud with RTS handshake, checks a zero-length read and performs a 200 ms read **without transmitting commands**. Incoming unexpected data makes that check different from the intended no-data timeout test. `--check-wmi` exercises loading the helper in a child AppDomain and running WMI without opening a serial port. `--check-loader` checks child-domain and hook initialization without querying WMI. `--version` prints the repository helper version.
 
 ## Project files and Downloads
 
@@ -153,4 +153,4 @@ To undo the launcher selection, point Lutris back at the original `LokProgrammer
 python -m unittest discover -s tests -v
 ```
 
-`build.ps1` builds the same sources on Windows with .NET Framework's compiler. CI checks the Python setup logic, builds the launcher on Windows and runs the WMI/loader check; it does not claim access to a LokProgrammer or decoder. See [CONTRIBUTING](CONTRIBUTING.md) for useful compatibility reports. Project code is MIT licensed; upstream components retain their own licenses, listed in [THIRD_PARTY](THIRD_PARTY.md).
+`build.ps1` builds the same sources on Windows with .NET Framework's compiler. CI checks the Python setup logic, builds the launcher on Windows and runs the child-domain/hook loader check; it does not claim access to a LokProgrammer or decoder. See [CONTRIBUTING](CONTRIBUTING.md) for useful compatibility reports. Project code is MIT licensed; upstream components retain their own licenses, listed in [THIRD_PARTY](THIRD_PARTY.md).

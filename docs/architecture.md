@@ -2,7 +2,7 @@
 
 Lutris starts Wine, Wine starts `LokProgrammerWineCompat.exe`, and the launcher loads the unchanged `LokProgrammer.exe` in a child .NET AppDomain **inside the same Windows process**. It remains present for the session. There is no separate daemon or replacement ESU protocol implementation.
 
-Harmony 2.3.3 installs in-memory hooks before ESU starts. The normal launch path follows the version that completed the hardware tests. The repository adds a `--check-wmi` path to verify assembly loading and WMI without a serial device.
+Harmony 2.3.3 installs in-memory hooks before ESU starts. The normal launch path follows the version that completed the hardware tests. The repository adds `--check-loader` to verify child-domain/hook loading without hardware, and `--check-wmi` to additionally run real WMI queries under Wine. Native Windows CI returned Access denied from the Wine-specific WMI workaround; native Windows runtime support is not claimed.
 
 ## WMI connection
 

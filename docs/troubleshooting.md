@@ -8,7 +8,7 @@ The original Wine-GE 8-26 connection failed before useful communication because 
 
 ## WMI InvalidCastException
 
-Check that Lutris launches **LokProgrammerWineCompat.exe**, not the original application, and that `0Harmony.dll` is beside it. Run the helper's `--check-wmi` mode with the same prefix/runner; this does not open a serial device. The generic JIT-debugging advice in a .NET error dialog is not a repair.
+Check that Lutris launches **LokProgrammerWineCompat.exe**, not the original application, and that `0Harmony.dll` is beside it. Run the helper's `--check-wmi` mode with the same prefix/runner; this does not open a serial device. The generic JIT-debugging advice in a .NET error dialog is not a repair. Native Windows CI returned Access denied when querying WMI through this Wine-specific workaround; use `--check-loader` for the non-WMI Windows build check. The real WMI diagnostic is validated under the documented Wine setup.
 
 Native Microsoft WMI and `WMIDisableCOMSecurity` were tested in disposable clones during the investigation. They did not provide the working fix and are not part of this setup.
 

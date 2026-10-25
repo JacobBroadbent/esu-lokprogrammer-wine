@@ -5,6 +5,7 @@ permissions:
 jobs:
   setup-tests:
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
       - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
@@ -13,17 +14,18 @@ jobs:
       - run: python -m unittest discover -s tests -v
   launcher:
     runs-on: windows-latest
+    timeout-minutes: 5
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
       - name: Build .NET Framework x86 launcher
         shell: powershell
         run: ./build.ps1
-      - name: Check child AppDomain loading and real WMI (no serial port)
+      - name: Check child AppDomain and hook loading (no WMI or serial port)
         shell: powershell
         run: |
           & ./build/LokProgrammerWineCompat.exe --version
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
-          & ./build/LokProgrammerWineCompat.exe --check-wmi
+          & ./build/LokProgrammerWineCompat.exe --check-loader
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:

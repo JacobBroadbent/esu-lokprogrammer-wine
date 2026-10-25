@@ -1,0 +1,18 @@
+{
+  "wine": {
+    "version": "11.20",
+    "directory": "wine-11.20-amd64",
+    "url": "https://github.com/Kron4ek/Wine-Builds/releases/download/11.20/wine-11.20-amd64.tar.xz",
+    "sha256": "3fcc6202695f5277ec03653c8e284eac560b54947fa8518552f7c98619a4ac9d"
+  },
+  "harmony": {
+    "version": "2.3.3",
+    "url": "https://api.nuget.org/v3-flatcontainer/lib.harmony/2.3.3/lib.harmony.2.3.3.nupkg",
+    "sha256": "87b63ddb92f04fcb89c30b7ebae473c948dd65e80569eb94aef08b163bc3bf63"
+  },
+  "winetricks": {
+    "version": "20260125",
+    "url": "https://raw.githubusercontent.com/Winetricks/winetricks/20260125/src/winetricks",
+    "sha256": "431f82fc74000e6c864409f1d8fb495d696c03928808e3e8acffc45179312a7b"
+  }
+}

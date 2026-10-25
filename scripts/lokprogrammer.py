@@ -104,15 +104,32 @@ def require_closed(args):
             raise RuntimeError('Save your project, finish device operations and close LokProgrammer first.')
 
 
-def set_link(link, target, replace=False):
+def validate_link(link, target, replace=False):
     target = Path(target).absolute()
     if link.is_symlink() and os.readlink(link) == str(target):
         return
     if link.exists() or link.is_symlink():
         if not replace or not link.is_symlink():
             raise RuntimeError('Existing mapping retained: ' + str(link) + '; use --replace to replace a symlink.')
+
+
+def set_link(link, target, replace=False):
+    target = Path(target).absolute()
+    validate_link(link, target, replace)
+    if link.is_symlink() and os.readlink(link) == str(target):
+        return
+    if link.is_symlink():
         link.unlink()
     link.symlink_to(target, target_is_directory=target.is_dir())
+
+
+def configure_port_mapping(args, device):
+    link = args.prefix / 'dosdevices/com1'
+    validate_link(link, device, args.replace)
+    # Launching reg may cause Wine to regenerate old automatic mappings first.
+    # Commit the registry value, then install the stable alias as the final step.
+    wine(args, 'reg', 'add', r'HKLM\Software\Wine\Ports', '/v', 'COM1', '/t', 'REG_SZ', '/d', str(device), '/f')
+    set_link(link, device, replace=True)
 
 
 def inspect(args):
@@ -199,9 +216,7 @@ def map_port(args):
                                 capture_output=True, text=True, check=True)
         if 'ID_VENDOR_ID=0403' not in result.stdout.splitlines():
             raise RuntimeError('This helper targets FTDI adapters; selected device is not identified as FTDI (0403).')
-    link = args.prefix / 'dosdevices/com1'
-    set_link(link, device, args.replace)
-    wine(args, 'reg', 'add', r'HKLM\Software\Wine\Ports', '/v', 'COM1', '/t', 'REG_SZ', '/d', str(device), '/f')
+    configure_port_mapping(args, device)
     print('COM1 mapped to', device)
 
 

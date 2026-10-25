@@ -54,6 +54,21 @@ class SetupGuards(unittest.TestCase):
             self.assertEqual(os.readlink(link), str(stable))
             tool.set_link(link, stable)  # Repeating the same stable mapping is safe.
 
+    def test_registry_refresh_cannot_leave_old_automatic_com_mapping(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            (root / 'dosdevices').mkdir()
+            link = root / 'dosdevices/com1'
+            stable = root / 'usb-FTDI-stable-id'
+            old = root / 'ttyS0'
+            stable.touch(); old.touch()
+            def start_registry_process(*args, **kwargs):
+                link.symlink_to(old)  # Simulate Wine's automatic mapping refresh.
+            with patch.object(tool, 'wine', side_effect=start_registry_process):
+                tool.configure_port_mapping(SimpleNamespace(prefix=root, replace=False), stable)
+            import os
+            self.assertEqual(os.readlink(link), str(stable))
+
     def test_regular_file_never_replaced_by_drive_mapping(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)

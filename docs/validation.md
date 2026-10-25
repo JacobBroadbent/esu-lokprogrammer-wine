@@ -39,7 +39,9 @@ The repository's ESU installer step installed 5.2.18 in that disposable
 prefix. Its helper installation, COM1 mapping through the selected FTDI
 by-id alias, and Lutris-settings generation succeeded. The mapping guard
 first refused Wine's existing `/dev/ttyS0` COM1 link; after inspecting it,
-the mapping was explicitly replaced in the disposable prefix. The stable symlink
+the mapping was explicitly replaced in the disposable prefix. The replay
+also caught Wine regenerating its automatic link during a registry update;
+the script now writes the stable symlink last, with a regression test. The stable symlink
 was checked to retain the alias rather than resolve it into a ttyUSB number.
 No serial port was opened by those mapping checks.
 
@@ -49,7 +51,7 @@ fresh installation: one operating-system row and zero matching COM1 PnP
 rows under Wine. This check does not transmit decoder commands. A new
 hardware read or write was not repeated in the disposable prefix.
 
-Eight Python guard tests passed locally. Windows build/WMI CI is configured
+Nine Python guard tests passed locally. Windows build/WMI CI is configured
 separately; its status must be checked on GitHub, not inferred from the
 local Wine checks. Generated build artifacts and machine-specific settings
 are ignored by Git and are not committed.

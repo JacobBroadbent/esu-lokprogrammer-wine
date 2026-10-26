@@ -28,7 +28,9 @@ In the original investigation, after confirming there were no active installers 
 
 A reading progress window alone does not prove useful communication. The early serial failure blocked even a nominal 200 ms read. The initial finite-timeout workaround then made progress but waited two seconds for short replies. Use the final available-byte version and check actual read progress.
 
-An additional intermittent idle UI/repaint stall was reported after decoder reading worked. The outer window could still resize, and resizing sometimes restored the controls. One WM_NULL check returned immediately. The UI later recovered without a settings change. Its cause remains unresolved.
+An additional idle UI/input stall was reported after decoder reading worked. The outer window could still resize, and resizing sometimes restored the controls. One WM_NULL check returned immediately. The user later isolated a monitor-dependent workaround: controls respond on the **left monitor (HDMI-A-1)** but not on the **right, primary monitor (HDMI-A-2)**. Both displays were 2560×1440 at 100% scaling, using KDE Wayland with Wine's X11 driver through XWayland. Keep the application entirely on the working monitor if you encounter this behavior. The monitor names describe this tested setup; they are not a universal rule about which display works. The underlying input/window-coordinate cause remains unconfirmed, and mixed scaling was not present in this observation.
+
+The user also reported running an update EXE. A subsequent check found the installed ESU executable and compatibility helper unchanged from the saved working copies. This does not establish that the update caused the UI issue. The helper currently addresses WMI and serial reads; it does not contain a monitor/input workaround.
 
 A Wine virtual-desktop test was prepared but **not performed**. If you try one, first save your project and finish device operations. Back up the Lutris settings, enable a virtual desktop using the classic Wine runner, and ensure the saved application window position lies inside that desktop. Do not report it as a verified fix based on this repo.
 
